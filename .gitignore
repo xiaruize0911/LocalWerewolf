@@ -1,0 +1,7 @@
+node_modules
+dist
+data/*.db*
+data/voice
+.DS_Store
+data/admin-password.txt
+*.log

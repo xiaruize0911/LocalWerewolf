@@ -1,0 +1,25 @@
+{
+  "name": "local-werewolf",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,magenta \"npm run dev -w @lw/server\" \"npm run dev -w @lw/client\"",
+    "build": "npm run build -w @lw/client",
+    "start": "npm run start -w @lw/server",
+    "serve": "npm run build && npm run start",
+    "test": "vitest run",
+    "typecheck": "tsc -p packages/engine && tsc -p packages/server && tsc -p packages/client",
+    "voice": "tsx scripts/gen-voice.ts",
+    "admin": "tsx scripts/admin.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0"
+  }
+}
