@@ -44,7 +44,17 @@ export function detectVoice(): Promise<string | null> {
 }
 
 const sha = (s: string) => createHash('sha1').update(s).digest('hex').slice(0, 20);
-const run = (cmd: string, args: string[]) => new Promise<void>((res, rej) => execFile(cmd, args, (err) => (err ? rej(err) : res())));
+/** 执行命令；macOS 的 say 偶尔会卡住不退出，所以加超时并重试 */
+async function run(cmd: string, args: string[], timeout = 20_000, tries = 3): Promise<void> {
+  for (let i = 1; ; i++) {
+    try {
+      await new Promise<void>((res, rej) => execFile(cmd, args, { timeout, killSignal: 'SIGKILL' }, (err) => (err ? rej(err) : res())));
+      return;
+    } catch (e) {
+      if (i >= tries) throw e;
+    }
+  }
+}
 
 /** 名单里的座位数（3 人及以上需要拼接） */
 function listLength(text: string): number {
